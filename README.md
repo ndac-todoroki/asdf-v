@@ -2,6 +2,8 @@
 
 V ([The V Programming Language](https://vlang.io/)) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
+[![Build Status](https://travis-ci.com/ndac-todoroki/asdf-v.svg?branch=master)](https://travis-ci.com/ndac-todoroki/asdf-v)
+
 ## Install
 
 Make sure you have `curl` and `make`. (and `asdf`.) Also, if you plan to use the `http` package and/or gui packages, you need some dependencies. Read https://github.com/vlang/v#running-the-examples.
