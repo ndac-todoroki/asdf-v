@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+install_v() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3/v
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d -t v_build_XXXXXX)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  # Delete previous symlinks to V if any, if not symlink, destroy it.
+  if [ -L ~/code/v ]; then
+    rm ~/code/v
+  else
+    rm -rf ~/code/v
+  fi
+
+  # path to the tar file
+  local source_path=$(get_download_file_path $install_type $version $tmp_download_dir)
+  download_source_file $install_type $version $source_path
+
+  if [ "$install_type" = "version" ]
+  then
+    echo "==> Copying release into place"
+  else
+    echo "==> Making the release"
+  fi
+
+  # running this in a subshell
+  # we don't want to disturb current working dir
+  (
+    if ! [ -e $install_path ]; then mkdir -p $install_path; fi
+
+    tar zxf $source_path -C $install_path --strip-components=1 || exit 1
+
+    ln -s $install_path ~/code/v
+    echo $(ls -a $install_path/compiler)
+    cd ~/code/v/compiler
+    make
+
+    if [ $? -ne 0 ]; then
+      rm -rf $install_path
+      exit 1
+    fi
+  )
+}
+
+
+download_source_file() {
+  local install_type=$1
+  local version=$2
+  local download_path=$3
+  local download_url=$(get_download_url $install_type $version)
+
+  # determine if the file exists
+  echo "==> Checking whether specified V release/reference exists..."
+  http_status=$(curl -I -w %{http_code} -s -o /dev/null $download_url)
+
+  if [ $http_status -eq 404 ]; then
+    echo -e """==> V version not found.
+GitHub returned a 404 for the following URL:
+${download_url}
+You can view a list of all V releases by running 'asdf list-all v'
+or by visiting https://github.com/vlang/v/releases
+"""
+
+    if [ "$install_type" = "version" ]; then
+      echo """Note: If you want to download a specific release of V, please
+specify the full version number (e.g. 1.2.1 instead of 1.3)."""
+    else
+      echo """Note: If you want to specify a git reference by which to install
+Elixir, it must be a valid git tag or branch (generally of the form v1.2.1)."""
+    fi
+
+    exit 1 # non zero due to file not existing
+  fi
+
+  echo -e """==> Downloading ${version} to ${source_path} from ${download_url}"""
+  curl -Lo $download_path -C - $download_url
+}
+
+
+get_download_file_path() {
+  local install_type=$1
+  local version=$2
+  local tmp_download_dir=$3
+
+  local pkg_name="v-${install_type}-${version}-src.tar.gz"
+
+  echo "$tmp_download_dir/$pkg_name"
+}
+
+
+get_download_url() {
+  local install_type=$1
+  local version=$2
+
+  if [ "$version" = "master" ]
+  then
+    echo "https://github.com/vlang/v/archive/${version}.tar.gz"
+  else
+    echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
+  fi
+}
+
+
+install_v $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
