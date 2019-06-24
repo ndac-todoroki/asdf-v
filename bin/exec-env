@@ -1,8 +1,6 @@
-
 #!/usr/bin/env bash
 
 if [ "${ASDF_INSTALL_VERSION}" != 'system' ] ; then
     rm -f ~/code/v
-    echo $ASDF_INSTALL_PATH
 	ln -s $ASDF_INSTALL_PATH/v ~/code/v
 fi
