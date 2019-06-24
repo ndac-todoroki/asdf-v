@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # asdf-plugin: v
 
-if [ "${ASDF_INSTALL_VERSION}" != 'system' ] ; then
-    rm -f ~/code/v
-	ln -s $ASDF_INSTALL_PATH/v ~/code/v
-fi
+# if [ "${ASDF_INSTALL_VERSION}" != 'system' ] ; then
+#     rm -f ~/code/v
+# 	ln -s $ASDF_INSTALL_PATH/v ~/code/v
+# fi
 
 ~/code/v/compiler/v
