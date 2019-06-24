@@ -33,11 +33,11 @@ install_v() {
   # we don't want to disturb current working dir
   (
     if ! [ -e $install_path ]; then mkdir -p $install_path; fi
+    if ! [ -e ~/code ]; then mkdir -p ~/code; fi
 
     tar zxf $source_path -C $install_path --strip-components=1 || exit 1
 
     ln -s $install_path ~/code/v
-    echo $(ls -a $install_path/compiler)
     cd ~/code/v/compiler
     make
 
@@ -105,6 +105,5 @@ get_download_url() {
     echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
   fi
 }
-
 
 install_v $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
