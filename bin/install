@@ -98,11 +98,16 @@ get_download_url() {
   local install_type=$1
   local version=$2
 
-  if [ "$version" = "master" ]
+  if [ "$install_type" = "ref" ]
   then
     echo "https://github.com/vlang/v/archive/${version}.tar.gz"
   else
-    echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
+    if [ "$version" = "master" ]
+    then
+      echo "https://github.com/vlang/v/archive/${version}.tar.gz"
+    else
+      echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
+    fi
   fi
 }
 
