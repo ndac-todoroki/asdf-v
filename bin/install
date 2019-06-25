@@ -112,12 +112,7 @@ get_download_url() {
   then
     echo "https://github.com/vlang/v/archive/${version}.tar.gz"
   else
-    if [ "$version" = "master" ]
-    then
-      echo "https://github.com/vlang/v/archive/${version}.tar.gz"
-    else
-      echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
-    fi
+    echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
   fi
 }
 

@@ -19,10 +19,15 @@ asdf plugin-add v https://github.com/ndac-todoroki/asdf-v.git
 Currently V does not support custom installation. [vlang/v #457](https://github.com/vlang/v/issues/457)  
 As a workaround, this plugin recreates a symlink of the V installation folder to `~/code/v` every time shim `v` is called. **It is preferred not to touch `~/code`.**
 
+## Compiling from a Github Release
+
+```
+$ asdf install v 0.1.0
+```
+
 ## Compiling from a Git reference or from source
 
-Although this plugin is created to show installable versions from Github releases, since the V releases are not stable yet, and the tar files doesn't contain enough files, you can't install from them currently.
-Instead, you can always install any version of the git commit id or git tag name.
+Along with released versions, you can always install any version of the git commit id or git tag name.
 
 ### Using the CLI
 
@@ -45,9 +50,10 @@ v ref:<commit reference>
 
 ### The `master` tag
 
-Just until V gets stable, `asdf install v master` does the same as `asdf install v ref:master` (the installation would be separate). This is just for less-typing. When you want to update the `master` V, first uninstall it (`asdf uninstall v master`) and then install it again.
-Keep in mind that `master` will always fetch the latest commit in the master branch, so it might be unstable, or worse, broken.
+~~Just until V gets stable, `asdf install v master` does the same as `asdf install v ref:master` (the installation would be separate). This is just for less-typing. When you want to update the `master` V, first uninstall it (`asdf uninstall v master`) and then install it again.
+Keep in mind that `master` will always fetch the latest commit in the master branch, so it might be unstable, or worse, broken.~~
 
+**This is now removed**, since all files needed to build are included since V v0.1.0 releases. You can still do `asdf  install v ref:master` alongside `asdf install v 0.1.0`.
 
 ## Use
 
