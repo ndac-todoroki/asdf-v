@@ -39,15 +39,25 @@ install_v() {
 
     ln -s $install_path ~/code/v
     cd ~/code/v/compiler
-    make
+
+    # download v.c from github
+    local vc_path=$(get_vc_download_file_path $install_type $version $tmp_download_dir)
+    download_vc $install_type $version v.c
+
+    # @see https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=vlang-git
+    echo "==> Self-recompiling V compiler"
+    cc -std=gnu11 -w -o vc v.c
+    ./vc -o v .
+    ./v -o v .
 
     if [ $? -ne 0 ]; then
       rm -rf $install_path
       exit 1
     fi
+
+    echo "==> Success!"
   )
 }
-
 
 download_source_file() {
   local install_type=$1
@@ -109,6 +119,68 @@ get_download_url() {
       echo "https://github.com/vlang/v/archive/v${version}.tar.gz"
     fi
   fi
+}
+
+download_vc() {
+  local install_type=$1
+  local version=$2
+  local download_path=$3
+
+  if [ "$install_type" = "version" ]; then
+    local download_url=$(get_vc_download_url $version)
+
+    # determine if the file exists
+    echo "==> Checking whether specified release/reference containing v.c exists..."
+    http_status=$(curl -I -w %{http_code} -s -o /dev/null $download_url)
+
+    if [ $http_status -eq 404 ]; then
+      echo "==> Not Found, Falling back to master..."
+      download_master_vc $download_path
+    else
+      echo -e """==> Downloading ${version} to ${download_path} from ${download_url}"""
+      curl -Lo $download_path -C - $download_url
+    fi
+  else
+    download_master_vc $download_path
+  fi
+}
+
+download_master_vc() {
+  local download_path=$1
+  local download_url=$(get_master_vc_download_url)
+
+  # determine if the file exists
+  echo "==> Looking for the latest v.c from https://github.com/vlang/vc..."
+  http_status=$(curl -I -w %{http_code} -s -o /dev/null $download_url)
+
+  if [ $http_status -eq 404 ]; then
+    echo "==> v.c not found. Aborting..."
+    exit 1
+  fi
+
+  echo -e """==> Downloading master to ${download_path} from ${download_url}"""
+  curl -Lo $download_path -C - $download_url
+}
+
+get_vc_download_file_path() {
+  local install_type=$1
+  local version=$2
+  local tmp_download_dir=$3
+
+  local pkg_name="v-${install_type}-${version}-v.c"
+
+  echo "$tmp_download_dir/$pkg_name"
+}
+
+# Needed until v.c is not required for compiling
+get_vc_download_url() {
+  local version=$1
+
+  echo "https://github.com/vlang/v/releases/download/v${version}/v.c"
+}
+
+get_master_vc_download_url() {
+  echo "https://github.com/vlang/vc/raw/master/v.c"
 }
 
 install_v $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
