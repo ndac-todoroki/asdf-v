@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# asdf-plugin: v
-
-# Use the symlink provided by exec-env
-~/code/v/compiler/v
