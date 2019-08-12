@@ -43,7 +43,7 @@ install_v() {
 
     echo "==> Symlinking v into ./bin"
     if ! [ -e bin ]; then mkdir bin; fi
-    ln -s ./v bin/v
+    ln -s ../v bin/v
 
     if [ $? -ne 0 ]; then
       rm -rf $install_path
