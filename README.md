@@ -6,20 +6,16 @@ V ([The V Programming Language](https://vlang.io/)) plugin for [asdf](https://gi
 
 ## Install
 
-Make sure you have `curl` and `make`. (and `asdf`.) Also, if you plan to use the `http` package and/or gui packages, you need some dependencies. Read https://github.com/vlang/v#running-the-examples.
+Make sure you have `curl` and `cc`. (and `asdf`.) Also, if you plan to use the `http` package and/or gui packages, you need some dependencies. Read https://github.com/vlang/v#running-the-examples.
 
 To install the plugin, run this:
 
 ```
-asdf plugin-add v https://github.com/ndac-todoroki/asdf-v.git
+asdf plugin-add v
 ```
+(Now this plugin is on the asdf-plugins repo, so no Github urls are needed!)
 
-### BE CAREFUL
-
-Currently V does not support custom installation. [vlang/v #457](https://github.com/vlang/v/issues/457)  
-As a workaround, this plugin recreates a symlink of the V installation folder to `~/code/v` every time shim `v` is called. **It is preferred not to touch `~/code`.**
-
-## Compiling from a Github Release
+## Compiling from a Github Release Tag
 
 ```
 $ asdf install v 0.1.0
@@ -48,12 +44,10 @@ You can specify the version to install with a line like so in your `.tool-versio
 v ref:<commit reference>
 ```
 
-### The `master` tag
+### About symlinks
 
-~~Just until V gets stable, `asdf install v master` does the same as `asdf install v ref:master` (the installation would be separate). This is just for less-typing. When you want to update the `master` V, first uninstall it (`asdf uninstall v master`) and then install it again.
-Keep in mind that `master` will always fetch the latest commit in the master branch, so it might be unstable, or worse, broken.~~
-
-**This is now removed**, since all files needed to build are included since V v0.1.0 releases. You can still do `asdf  install v ref:master` alongside `asdf install v 0.1.0`.
+In the past, `V` required `~/code/v` to be the executable path, and `asdf-v` used and recreated a symlink every time the asdf shim was called.
+`V` now doesn't use that directory (and ENV values), so current `asdf-v` versions do not create symlinks, and doesn't require/edit the `~/code` directory anymore.
 
 ## Use
 
