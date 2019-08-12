@@ -39,10 +39,11 @@ install_v() {
     echo "==> Self-recompiling V compiler"
     echo $(pwd)
     cc -std=gnu11 -w -o v $vc_path/v.c -lm
+    ./v -o v compiler
 
-    echo "==> Installing v into ./bin"
+    echo "==> Symlinking v into ./bin"
     if ! [ -e bin ]; then mkdir bin; fi
-    ./v -o bin/v compiler
+    ln -s ./v bin/v
 
     if [ $? -ne 0 ]; then
       rm -rf $install_path
