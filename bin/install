@@ -11,13 +11,6 @@ install_v() {
     local tmp_download_dir=$TMPDIR
   fi
 
-  # # Delete previous symlinks to V if any, if not symlink, destroy it.
-  # if [ -L ~/code/v ]; then
-  #   rm ~/code/v
-  # else
-  #   rm -rf ~/code/v
-  # fi
-
   # path to the tar file
   local source_path=$(get_download_file_path $install_type $version $tmp_download_dir)
   download_source_file $install_type $version $source_path
@@ -46,7 +39,10 @@ install_v() {
     echo "==> Self-recompiling V compiler"
     echo $(pwd)
     cc -std=gnu11 -w -o v $vc_path/v.c -lm
-    ./v -o v compiler
+
+    echo "==> Installing v into ./bin"
+    if ! [ -e bin ]; then mkdir bin; fi
+    ./v -o bin/v compiler
 
     if [ $? -ne 0 ]; then
       rm -rf $install_path
