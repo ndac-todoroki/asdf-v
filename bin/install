@@ -40,6 +40,7 @@ install_v() {
     echo $(pwd)
     cc -std=gnu11 -w -o v $vc_path/v.c -lm
     ./v -prod -o v compiler
+    make CFLAGS+="-fPIC -pie" thirdparty
 
     echo "==> Symlinking v into ./bin"
     if ! [ -e bin ]; then mkdir bin; fi
@@ -84,7 +85,7 @@ V, it must be a valid git tag or branch (generally of the form v1.2.1)."""
   fi
 
   echo -e """==> Downloading ${version} to ${source_path} from ${download_url}"""
-  curl -Lo $download_path -C - $download_url
+  curl -Lo $download_path $download_url
 }
 
 
@@ -134,7 +135,7 @@ download_master_vc() {
   fi
 
   echo -e """==> Downloading master to ${download_path} from ${download_url}"""
-  curl -Lo $download_path/$filename -C - $download_url
+  curl -Lo $download_path/$filename $download_url
 }
 
 get_vc_download_file_path() {
